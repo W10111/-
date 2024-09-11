@@ -1,0 +1,77 @@
+<!DOCTYPE html><html lang="zh"><head><meta http-equiv="Content-Security-Policy" content="default-src 'self' 'unsafe-inline' 'unsafe-eval' data: blob: https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://code.jquery.com https://unpkg.com https://d3js.org https://threejs.org https://cdn.plot.ly https://stackpath.bootstrapcdn.com https://maps.googleapis.com https://cdn.tailwindcss.com https://ajax.googleapis.com https://kit.fontawesome.com https://cdn.datatables.net https://maxcdn.bootstrapcdn.com https://code.highcharts.com https://tako-static-assets-production.s3.amazonaws.com https://www.youtube.com https://fonts.googleapis.com https://fonts.gstatic.com https://pfst.cf2.poecdn.net https://i.imgur.com https://wikimedia.org https://*.icons8.com https://*.giphy.com https://picsum.photos https://images.unsplash.com; frame-src 'self' https://www.youtube.com https://trytako.com; child-src 'self'; manifest-src 'self'; worker-src 'self'; upgrade-insecure-requests; block-all-mixed-content;">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>决赛队伍顺序抽签</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            text-align: center;
+            background-color: #f9f9f9;
+        }
+        input[type="text"] {
+            width: 80%;
+            padding: 10px;
+            margin: 10px 0;
+        }
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+        }
+        #result {
+            margin-top: 20px;
+            font-size: 24px;
+            color: #2c3e50;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>决赛队伍顺序抽签</h1>
+    <input type="text" id="team" placeholder="请输入团队/企业名字">
+    <button onclick="draw()">抽签</button>
+    <button onclick="reset()">重置</button>
+    
+    <div id="result"></div>
+
+    <script>
+        const availableNumbers = Array.from({ length: 15 }, (_, i) => i + 3);
+        const drawnTeams = {};
+
+        function draw() {
+            const teamName = document.getElementById('team').value.trim();
+            if (!teamName) {
+                document.getElementById('result').innerText = '请输入团队/企业名字。';
+                return;
+            }
+            if (drawnTeams[teamName]) {
+                document.getElementById('result').innerText = `${teamName} 已经抽中 ${drawnTeams[teamName]}号！`;
+                return;
+            }
+            if (Object.keys(drawnTeams).length >= 16) {
+                document.getElementById('result').innerText = '最多只能有 16 个团队参与。';
+                return;
+            }
+            if (availableNumbers.length === 0) {
+                document.getElementById('result').innerText = '所有号码已被抽完。';
+                return;
+            }
+            const randomIndex = Math.floor(Math.random() * availableNumbers.length);
+            const number = availableNumbers[randomIndex];
+            availableNumbers.splice(randomIndex, 1);
+            drawnTeams[teamName] = number;
+            document.getElementById('result').innerText = `${teamName} 抽中的是 ${number}号！`;
+        }
+
+        function reset() {
+            document.getElementById('team').value = '';
+            document.getElementById('result').innerText = '';
+            Object.keys(drawnTeams).forEach(team => delete drawnTeams[team]);
+            availableNumbers.length = 0;
+            availableNumbers.push(...Array.from({ length: 15 }, (_, i) => i + 3));
+        }
+    </script>
+
+
+
+</body></html>
